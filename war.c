@@ -1,98 +1,117 @@
-// ============================================================================
-//         PROJETO WAR ESTRUTURADO - DESAFIO DE CÓDIGO
-// ============================================================================
-//        
-// ============================================================================
-//
-// OBJETIVOS:
-// - Modularizar completamente o código em funções especializadas.
-// - Implementar um sistema de missões para um jogador.
-// - Criar uma função para verificar se a missão foi cumprida.
-// - Utilizar passagem por referência (ponteiros) para modificar dados e
-//   passagem por valor/referência constante (const) para apenas ler.
-// - Foco em: Design de software, modularização, const correctness, lógica de jogo.
-//
-// ============================================================================
+/*
+    ---------------------------------------------------------------
+    SISTEMA DE CADASTRO DE LIVROS — NÍVEL NOVATO
+    Estruturas de Dados (Structs, Vetores e Encapsulamento)
+    ---------------------------------------------------------------
 
-// Inclusão das bibliotecas padrão necessárias para entrada/saída, alocação de memória, manipulação de strings e tempo.
+    Aluno: Thiago Ciavolela Brito de Oliveira
+    Projeto: Nível Novato — Conhecendo as Estruturas de Dados
 
-// --- Constantes Globais ---
-// Definem valores fixos para o número de territórios, missões e tamanho máximo de strings, facilitando a manutenção.
+    Descrição:
+    Este programa implementa um sistema simples de cadastro de livros
+    utilizando estruturas de dados do tipo struct e um vetor linear.
+    O usuário informa quantos livros deseja cadastrar e, a partir disso,
+    o sistema solicita os dados de cada livro (nome, autor, editora e
+    edição). Todas as informações são armazenadas em um vetor de structs,
+    demonstrando organização, encapsulamento e manipulação básica de
+    dados em memória.
 
-// --- Estrutura de Dados ---
-// Define a estrutura para um território, contendo seu nome, a cor do exército que o domina e o número de tropas.
+    Conceitos Aplicados:
+    - Estruturas de dados lineares (vetor)
+    - Uso de struct para encapsulamento de informações
+    - Entrada e saída de dados
+    - Manipulação de strings
+    - Alocação dinâmica com malloc()
+    - Limpeza de buffer
+    - Organização modular com funções em C
 
-// --- Protótipos das Funções ---
-// Declarações antecipadas de todas as funções que serão usadas no programa, organizadas por categoria.
-// Funções de setup e gerenciamento de memória:
-// Funções de interface com o usuário:
-// Funções de lógica principal do jogo:
-// Função utilitária:
+    ---------------------------------------------------------------
+*/
 
-// --- Função Principal (main) ---
-// Função principal que orquestra o fluxo do jogo, chamando as outras funções em ordem.
-int main() {
-    // 1. Configuração Inicial (Setup):
-    // - Define o locale para português.
-    // - Inicializa a semente para geração de números aleatórios com base no tempo atual.
-    // - Aloca a memória para o mapa do mundo e verifica se a alocação foi bem-sucedida.
-    // - Preenche os territórios com seus dados iniciais (tropas, donos, etc.).
-    // - Define a cor do jogador e sorteia sua missão secreta.
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
-    // 2. Laço Principal do Jogo (Game Loop):
-    // - Roda em um loop 'do-while' que continua até o jogador sair (opção 0) ou vencer.
-    // - A cada iteração, exibe o mapa, a missão e o menu de ações.
-    // - Lê a escolha do jogador e usa um 'switch' para chamar a função apropriada:
-    //   - Opção 1: Inicia a fase de ataque.
-    //   - Opção 2: Verifica se a condição de vitória foi alcançada e informa o jogador.
-    //   - Opção 0: Encerra o jogo.
-    // - Pausa a execução para que o jogador possa ler os resultados antes da próxima rodada.
+/* -------------------------------------------------------------
+   Struct Livro
+   Representa uma entidade “Livro”, agrupando seus dados
+------------------------------------------------------------- */
+typedef struct {
+    char nome[100];
+    char autor[100];
+    char editora[100];
+    int edicao;
+} Livro;
 
-    // 3. Limpeza:
-    // - Ao final do jogo, libera a memória alocada para o mapa para evitar vazamentos de memória.
+/* -------------------------------------------------------------
+   Função: cadastrarLivros
+   Objetivo: Receber os dados informados pelo usuário e
+   armazená-los no vetor de structs.
+------------------------------------------------------------- */
+void cadastrarLivros(Livro *livros, int quantidade) {
+    for (int i = 0; i < quantidade; i++) {
+        printf("\n--- Cadastro do Livro %d ---\n", i + 1);
 
-    return 0;
+        printf("Nome do livro: ");
+        fgets(livros[i].nome, sizeof(livros[i].nome), stdin);
+        livros[i].nome[strcspn(livros[i].nome, "\n")] = '\0';
+
+        printf("Autor: ");
+        fgets(livros[i].autor, sizeof(livros[i].autor), stdin);
+        livros[i].autor[strcspn(livros[i].autor, "\n")] = '\0';
+
+        printf("Editora: ");
+        fgets(livros[i].editora, sizeof(livros[i].editora), stdin);
+        livros[i].editora[strcspn(livros[i].editora, "\n")] = '\0';
+
+        printf("Número da edição: ");
+        scanf("%d", &livros[i].edicao);
+        getchar(); // limpeza do buffer
+    }
 }
 
-// --- Implementação das Funções ---
+/* -------------------------------------------------------------
+   Função: exibirLivros
+   Objetivo: Mostrar todos os livros cadastrados pelo usuário.
+------------------------------------------------------------- */
+void exibirLivros(Livro *livros, int quantidade) {
+    printf("\n==============================\n");
+    printf("     LIVROS CADASTRADOS\n");
+    printf("==============================\n");
 
-// alocarMapa():
-// Aloca dinamicamente a memória para o vetor de territórios usando calloc.
-// Retorna um ponteiro para a memória alocada ou NULL em caso de falha.
+    for (int i = 0; i < quantidade; i++) {
+        printf("\nLivro %d:\n", i + 1);
+        printf("Nome: %s\n", livros[i].nome);
+        printf("Autor: %s\n", livros[i].autor);
+        printf("Editora: %s\n", livros[i].editora);
+        printf("Edição: %d\n", livros[i].edicao);
+    }
+}
 
-// inicializarTerritorios():
-// Preenche os dados iniciais de cada território no mapa (nome, cor do exército, número de tropas).
-// Esta função modifica o mapa passado por referência (ponteiro).
+/* -------------------------------------------------------------
+   Função Principal
+   Responsável pelo fluxo geral do programa.
+------------------------------------------------------------- */
+int main() {
+    int quantidade;
 
-// liberarMemoria():
-// Libera a memória previamente alocada para o mapa usando free.
+    printf("Quantos livros deseja cadastrar? ");
+    scanf("%d", &quantidade);
+    getchar(); // limpa o \n deixado pelo scanf
 
-// exibirMenuPrincipal():
-// Imprime na tela o menu de ações disponíveis para o jogador.
+    // Alocação dinâmica do vetor de structs
+    Livro *livros = (Livro *)malloc(quantidade * sizeof(Livro));
 
-// exibirMapa():
-// Mostra o estado atual de todos os territórios no mapa, formatado como uma tabela.
-// Usa 'const' para garantir que a função apenas leia os dados do mapa, sem modificá-los.
+    if (livros == NULL) {
+        printf("Erro ao alocar memória. Encerrando o sistema.\n");
+        return 1;
+    }
 
-// exibirMissao():
-// Exibe a descrição da missão atual do jogador com base no ID da missão sorteada.
+    cadastrarLivros(livros, quantidade);
+    exibirLivros(livros, quantidade);
 
-// faseDeAtaque():
-// Gerencia a interface para a ação de ataque, solicitando ao jogador os territórios de origem e destino.
-// Chama a função simularAtaque() para executar a lógica da batalha.
+    free(livros); // Liberação da memória alocada
 
-// simularAtaque():
-// Executa a lógica de uma batalha entre dois territórios.
-// Realiza validações, rola os dados, compara os resultados e atualiza o número de tropas.
-// Se um território for conquistado, atualiza seu dono e move uma tropa.
-
-// sortearMissao():
-// Sorteia e retorna um ID de missão aleatório para o jogador.
-
-// verificarVitoria():
-// Verifica se o jogador cumpriu os requisitos de sua missão atual.
-// Implementa a lógica para cada tipo de missão (destruir um exército ou conquistar um número de territórios).
-// Retorna 1 (verdadeiro) se a missão foi cumprida, e 0 (falso) caso contrário.
-
-// limparBufferEntrada():
-// Função utilitária para limpar o buffer de entrada do teclado (stdin), evitando problemas com leituras consecutivas de scanf e getchar.
+    printf("\nPrograma finalizado com sucesso.\n");
+    return 0;
+}
